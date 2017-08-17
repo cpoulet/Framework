@@ -1,5 +1,7 @@
 <?php
 
+namespace Core;
+
 class Router {
 
     protected $_routes = [];
@@ -19,7 +21,6 @@ class Router {
     function match($url) {
         foreach($this->getRoutes() as $route => $params) {
             if (preg_match($route, $url, $matches)) {
-                $params = [];
                 foreach($matches as $key => $value) {
                     if (is_string($key))
                         $params[$key] = $value;
@@ -31,6 +32,46 @@ class Router {
         return False;
     }
 
+    function dispatch($url) {
+        $url = $this->_removeQuery($url);
+        if ($this->match($url)) {
+            $controller = $this->_params['controller'];
+            $controller = $this->_toStudlyCaps($controller);
+            $controller = "App\Controllers\\$controller";
+            if (class_exists($controller)) {
+                $controller_obj = new $controller();
+                $action = $this->_params['action'];
+                $action = $this->_toCamelCase($action);
+                if (is_callable([$controller_obj, $action]))
+                    $controller_obj->$action();
+                else
+                    echo "Method $action from $controller does not exist.";
+            }
+            else
+                echo "Controller class $controller does not exist.";
+        }
+        else
+            echo "The url $url goes nowhere.";
+    }
+
+    protected function _removeQuery($url) {
+        if ($url != '') {
+            $split = explode('&', $url, 2);
+            if (strpos($split[0], '=') === False)
+                $url = $split[0];
+            else
+                $url = '';
+        }
+        return $url;
+    }
+
+    private function _toStudlyCaps($s) {
+        return str_replace(' ', '', ucwords(str_replace('-', ' ', $s)));
+    }
+
+    private function _toCamelCase($s) {
+        return lcfirst($this->_toStudlyCaps($s));
+    }
 }
 
 ?>
