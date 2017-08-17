@@ -37,9 +37,9 @@ class Router {
         if ($this->match($url)) {
             $controller = $this->_params['controller'];
             $controller = $this->_toStudlyCaps($controller);
-            $controller = "App\Controllers\\$controller";
+            $controller = $this->_getNamespace() . $controller;
             if (class_exists($controller)) {
-                $controller_obj = new $controller();
+                $controller_obj = new $controller($this->getParams());
                 $action = $this->_params['action'];
                 $action = $this->_toCamelCase($action);
                 if (is_callable([$controller_obj, $action]))
@@ -52,6 +52,13 @@ class Router {
         }
         else
             echo "The url $url goes nowhere.";
+    }
+
+    protected function _getNamespace() {
+        $namespace = 'App\Controllers\\';
+        if (array_key_exists('namespace', $this->getParams()))
+            $namespace .= $this->_params['namespace'] . '\\';
+        return $namespace;
     }
 
     protected function _removeQuery($url) {
