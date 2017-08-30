@@ -1,10 +1,12 @@
 <?php
 
-spl_autoload_register(function ($class) {
-    $file = dirname(__DIR__) . '/' . str_replace('\\', '/', $class) . '.php';
-    if (is_readable($file))
-        require $file;
-});
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+#Twig_Autoloader::register();  #Utility ??
+
+error_reporting(E_ALL);
+set_error_handler('Core\Error::errorHandler');
+set_exception_handler('Core\Error::exceptionHandler');
 
 $router = new Core\Router();
 

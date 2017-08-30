@@ -45,13 +45,13 @@ class Router {
                 if (is_callable([$controller_obj, $action]))
                     $controller_obj->$action();
                 else
-                    echo "Method $action from $controller does not exist.";
+                    throw new \Exception("Method $action from $controller does not exist.");
             }
             else
-                echo "Controller class $controller does not exist.";
+                throw new \Exception("Controller class $controller does not exist.");
         }
         else
-            echo "The url $url goes nowhere.";
+            throw new \Exception("The url $url goes nowhere.", 404);
     }
 
     protected function _getNamespace() {

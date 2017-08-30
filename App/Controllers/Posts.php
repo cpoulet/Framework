@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use \Core\View;
+use App\Models\Post;
+
 class Posts extends \Core\Controller {
 
     protected function before() {
@@ -11,7 +14,8 @@ class Posts extends \Core\Controller {
     }
 
     function indexAction() {
-        echo 'Posts -> index()';
+        $posts = Post::getAll();
+        View::renderTemplate('Posts/index.html', ['name' => 'post index', 'posts' => $posts]);
     }
 
     function addNewAction() {
