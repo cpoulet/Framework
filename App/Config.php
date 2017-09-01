@@ -9,8 +9,7 @@ class Config {
     const DB_USER = 'cpoulet';
     const DB_PASS = 'PASS';
     
-    const SHOW_ERRORS = False;
-
+    const SHOW_ERRORS = True;
 
 }
 
